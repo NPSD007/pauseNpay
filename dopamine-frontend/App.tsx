@@ -62,7 +62,31 @@ const App = () => {
   }, [currentStep]);
 
   const plantTimeBomb = async () => {
-    Alert.alert("Guardian Active", "Monitoring digital footprint...");
+    Alert.alert("Guardian Active", "Monitoring footprint...");
+
+    try {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Permission Denied", "Please enable notifications.");
+        return;
+      }
+    } catch (error) {
+      console.error("Notifications Error:", error);
+    }
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "⚠️ High Impulse Risk",
+        body: "Your impulse risk is 85% because you've been on social media for 65 mins.",
+        sound: true,
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+        seconds: 10,
+      },
+    });
+
+    setIsBombArmed(true);
 
     const now = new Date();
     const hour = now.getHours();
@@ -82,53 +106,19 @@ const App = () => {
     ];
     const day_of_week = days[now.getDay()];
 
-    let finalTriggerReason =
-      "Your impulse risk is high because you've been on social media for 65 mins.";
-
-    try {
-      const { status } = await Notifications.requestPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert("Permission Denied", "Please enable notifications.");
-        return;
-      }
-
-      const url = "http://10.221.153.35:8000/api/v1/trigger";
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          time_of_day,
-          day_of_week,
-          app_sequence: "Instagram -> Amazon",
-          social_screen_time_mins: 65,
-          daily_spend_ratio: 2.5,
-          erratic_usage_score: 8.2,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.trigger_reason) {
-          finalTriggerReason = data.trigger_reason;
-        }
-      }
-    } catch (error) {
-      console.error("API Error:", error);
-    }
-
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "⚠️ High Impulse Risk",
-        body: finalTriggerReason,
-        sound: true,
-      },
-      trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-        seconds: 5,
-      },
-    });
-
-    setIsBombArmed(true);
+    const url = "http://10.221.153.35:8000/api/v1/trigger";
+    fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        time_of_day,
+        day_of_week,
+        app_sequence: "Instagram -> Amazon",
+        social_screen_time_mins: 65,
+        daily_spend_ratio: 2.5,
+        erratic_usage_score: 8.2,
+      }),
+    }).catch((error) => console.error("API Error:", error));
   };
 
   const handleCloseOverlay = () => setShowFriction(false);
