@@ -109,7 +109,7 @@ const TriggerHeatmap: React.FC = () => {
                   key={`${timeBucket}-${dayLetter}-${tbIndex}-${dlIndex}`}
                   style={[styles.dataCell, { backgroundColor }]}
                 >
-                  <Text style={styles.scoreText}>
+                  <Text style={[styles.scoreText, { color: (cellData?.riskScore ?? 0) > 70 ? "#000000" : "#A0A0A0" }]}>
                     {cellData?.riskScore ?? 0}
                   </Text>
                 </View>
@@ -237,7 +237,9 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 48,
     marginHorizontal: 3,
-    borderRadius: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.05)",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(124, 255, 45, 0.05)",
