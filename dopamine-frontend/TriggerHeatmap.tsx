@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useMemo } from "react";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 
 interface HeatmapCell {
   day: string;
@@ -9,9 +9,17 @@ interface HeatmapCell {
 }
 
 const generateMockData = (): HeatmapCell[] => {
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  const dayLetters = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-  const timeBuckets = ['Morning', 'Afternoon', 'Evening', 'Late Night'];
+  const days = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
+  const dayLetters = ["M", "T", "W", "T", "F", "S", "S"];
+  const timeBuckets = ["Morning", "Afternoon", "Evening", "Late Night"];
 
   const data: HeatmapCell[] = [];
 
@@ -20,7 +28,10 @@ const generateMockData = (): HeatmapCell[] => {
       let riskScore = Math.floor(Math.random() * 101);
 
       // Force Friday Late Night and Saturday Late Night > 85
-      if ((day === 'Friday' || day === 'Saturday') && timeBucket === 'Late Night') {
+      if (
+        (day === "Friday" || day === "Saturday") &&
+        timeBucket === "Late Night"
+      ) {
         riskScore = Math.floor(Math.random() * 15) + 86; // 86-100
       }
 
@@ -38,11 +49,11 @@ const generateMockData = (): HeatmapCell[] => {
 
 const getColorForScore = (score: number): string => {
   if (score <= 40) {
-    return '#e8eef7'; // Faint gray-blue
+    return "rgba(124, 255, 45, 0.1)"; // Low
   } else if (score <= 70) {
-    return '#b8a4d9'; // Medium purple
+    return "rgba(124, 255, 45, 0.4)"; // Medium
   } else {
-    return '#7c3aed'; // Deep vibrant purple
+    return "#7CFF2D"; // High
   }
 };
 
@@ -56,47 +67,51 @@ const TriggerHeatmap: React.FC = () => {
   };
 
   const riskiestWindow = getRiskiestWindow();
-  const timeBuckets = ['Morning', 'Afternoon', 'Evening', 'Late Night'];
-  const dayLetters = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  const timeBuckets = ["Morning", "Afternoon", "Evening", "Late Night"];
+  const dayLetters = ["M", "T", "W", "T", "F", "S", "S"];
 
-  const getCellData = (timeBucket: string, dayLetter: string): HeatmapCell | undefined => {
+  const getCellData = (
+    timeBucket: string,
+    dayLetter: string,
+  ): HeatmapCell | undefined => {
     return data.find(
-      (cell) => cell.timeBucket === timeBucket && cell.dayLetter === dayLetter
+      (cell) => cell.timeBucket === timeBucket && cell.dayLetter === dayLetter,
     );
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerTitle}>Your Riskiest Window</Text>
-      <Text style={styles.riskiestWindow}>{riskiestWindow}</Text>
-
       <View style={styles.gridContainer}>
         {/* Top row with day letters */}
         <View style={styles.gridRow}>
           <View style={styles.labelCell} />
-          {dayLetters.map((letter) => (
-            <View key={letter} style={styles.dayHeaderCell}>
+          {dayLetters.map((letter, index) => (
+            <View key={`${letter}-${index}`} style={styles.dayHeaderCell}>
               <Text style={styles.dayHeaderText}>{letter}</Text>
             </View>
           ))}
         </View>
 
         {/* Rows for each time bucket */}
-        {timeBuckets.map((timeBucket) => (
-          <View key={timeBucket} style={styles.gridRow}>
+        {timeBuckets.map((timeBucket, tbIndex) => (
+          <View key={`${timeBucket}-${tbIndex}`} style={styles.gridRow}>
             <View style={styles.timeLabelCell}>
               <Text style={styles.timeLabelText}>{timeBucket}</Text>
             </View>
-            {dayLetters.map((dayLetter) => {
+            {dayLetters.map((dayLetter, dlIndex) => {
               const cellData = getCellData(timeBucket, dayLetter);
-              const backgroundColor = cellData ? getColorForScore(cellData.riskScore) : '#f5f5f7';
+              const backgroundColor = cellData
+                ? getColorForScore(cellData.riskScore)
+                : "rgba(124, 255, 45, 0.05)";
 
               return (
                 <View
-                  key={`${timeBucket}-${dayLetter}`}
+                  key={`${timeBucket}-${dayLetter}-${tbIndex}-${dlIndex}`}
                   style={[styles.dataCell, { backgroundColor }]}
                 >
-                  <Text style={styles.scoreText}>{cellData?.riskScore ?? 0}</Text>
+                  <Text style={styles.scoreText}>
+                    {cellData?.riskScore ?? 0}
+                  </Text>
                 </View>
               );
             })}
@@ -107,17 +122,53 @@ const TriggerHeatmap: React.FC = () => {
       {/* Legend */}
       <View style={styles.legendContainer}>
         <Text style={styles.legendTitle}>Risk Level</Text>
-        <View style={styles.legendRow}>
-          <View style={styles.legendItem}>
-            <View style={[styles.legendColor, { backgroundColor: '#e8eef7' }]} />
+        <View
+          style={[
+            styles.legendRow,
+            {
+              flexDirection: "row",
+              flexWrap: "wrap",
+              justifyContent: "center",
+            },
+          ]}
+        >
+          <View
+            style={[
+              styles.legendItem,
+              { marginHorizontal: 8, marginVertical: 4 },
+            ]}
+          >
+            <View
+              style={[
+                styles.legendColor,
+                { backgroundColor: "rgba(124, 255, 45, 0.1)" },
+              ]}
+            />
             <Text style={styles.legendLabel}>Low (0–40)</Text>
           </View>
-          <View style={styles.legendItem}>
-            <View style={[styles.legendColor, { backgroundColor: '#b8a4d9' }]} />
+          <View
+            style={[
+              styles.legendItem,
+              { marginHorizontal: 8, marginVertical: 4 },
+            ]}
+          >
+            <View
+              style={[
+                styles.legendColor,
+                { backgroundColor: "rgba(124, 255, 45, 0.4)" },
+              ]}
+            />
             <Text style={styles.legendLabel}>Medium (41–70)</Text>
           </View>
-          <View style={styles.legendItem}>
-            <View style={[styles.legendColor, { backgroundColor: '#7c3aed' }]} />
+          <View
+            style={[
+              styles.legendItem,
+              { marginHorizontal: 8, marginVertical: 4 },
+            ]}
+          >
+            <View
+              style={[styles.legendColor, { backgroundColor: "#7CFF2D" }]}
+            />
             <Text style={styles.legendLabel}>High (71–100)</Text>
           </View>
         </View>
@@ -129,28 +180,29 @@ const TriggerHeatmap: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#1E1E1E",
     paddingHorizontal: 16,
     paddingVertical: 24,
+    borderRadius: 24,
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#1c1c1e',
+    fontWeight: "600",
+    color: "#FFFFFF",
     marginBottom: 8,
     letterSpacing: -0.4,
   },
   riskiestWindow: {
     fontSize: 22,
-    fontWeight: '700',
-    color: '#7c3aed',
+    fontWeight: "700",
+    color: "#7CFF2D",
     marginBottom: 28,
   },
   gridContainer: {
     marginBottom: 32,
   },
   gridRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 8,
   },
   labelCell: {
@@ -160,25 +212,25 @@ const styles = StyleSheet.create({
   dayHeaderCell: {
     flex: 1,
     height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginHorizontal: 3,
   },
   dayHeaderText: {
     fontSize: 13,
-    fontWeight: '600',
-    color: '#636366',
+    fontWeight: "600",
+    color: "#A0A0A0",
   },
   timeLabelCell: {
     width: 110,
     height: 48,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
+    justifyContent: "center",
+    alignItems: "flex-start",
   },
   timeLabelText: {
     fontSize: 12,
-    fontWeight: '500',
-    color: '#636366',
+    fontWeight: "500",
+    color: "#A0A0A0",
     lineHeight: 16,
   },
   dataCell: {
@@ -186,35 +238,35 @@ const styles = StyleSheet.create({
     height: 48,
     marginHorizontal: 3,
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f7',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(124, 255, 45, 0.05)",
   },
   scoreText: {
     fontSize: 11,
-    fontWeight: '600',
-    color: '#1c1c1e',
+    fontWeight: "600",
+    color: "#FFFFFF",
   },
   legendContainer: {
     paddingHorizontal: 12,
     paddingVertical: 16,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#1A1A1A",
     borderRadius: 12,
     marginBottom: 24,
   },
   legendTitle: {
     fontSize: 13,
-    fontWeight: '600',
-    color: '#1c1c1e',
+    fontWeight: "600",
+    color: "#FFFFFF",
     marginBottom: 12,
   },
   legendRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   legendColor: {
     width: 18,
@@ -224,8 +276,8 @@ const styles = StyleSheet.create({
   },
   legendLabel: {
     fontSize: 12,
-    color: '#636366',
-    fontWeight: '400',
+    color: "#A0A0A0",
+    fontWeight: "400",
   },
 });
 
