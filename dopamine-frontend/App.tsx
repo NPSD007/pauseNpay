@@ -14,8 +14,6 @@ import {
   useWindowDimensions,
   Modal,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useFonts } from 'expo-font';
 import TriggerHeatmap from "./TriggerHeatmap";
 import FrictionOverlay from "./FrictionOverlay";
 
@@ -23,10 +21,6 @@ LogBox.ignoreAllLogs();
 LogBox.ignoreLogs(["expo-notifications: Android Push notifications"]);
 
 const App = () => {
-  const [fontsLoaded] = useFonts({
-    Ionicons: require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
-  });
-
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [currentBalance, setCurrentBalance] = useState<string>("");
   const [savingsGoal, setSavingsGoal] = useState<string>("");
@@ -115,10 +109,6 @@ const App = () => {
   };
 
   const handleCloseOverlay = () => setShowFriction(false);
-
-  if (!fontsLoaded) {
-    return null; // Wait for the font to load
-  }
 
   const renderStep = () => {
     switch (currentStep) {
@@ -255,7 +245,31 @@ const App = () => {
                 alignItems: "center",
               }}
             >
-              <Ionicons name="checkmark-circle" size={80} color="#7CFF2D" style={{ marginBottom: 20 }} />
+              <View style={{ 
+                width: 80, 
+                height: 80, 
+                borderRadius: 40, 
+                backgroundColor: 'rgba(124, 255, 45, 0.1)', // Subtle neon green glow
+                justifyContent: 'center', 
+                alignItems: 'center', 
+                marginBottom: 20, 
+                borderWidth: 2, 
+                borderColor: '#7CFF2D',
+                shadowColor: '#7CFF2D',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.3,
+                shadowRadius: 10
+              }}>
+                <Text style={{ 
+                  color: '#7CFF2D', 
+                  fontSize: 50, 
+                  fontWeight: 'bold', 
+                  textAlign: 'center',
+                  marginTop: Platform.OS === 'ios' ? 0 : -5 // Visual centering tweak
+                }}>
+                  ✓
+                </Text>
+              </View>
               <Text style={styles.allSetText}>You're all set!</Text>
               <Text style={styles.subtitleCentered}>
                 Let's try to save ₹{savingsGoal || "0"} this month.
