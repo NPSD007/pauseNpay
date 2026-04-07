@@ -14,6 +14,7 @@ import {
   useWindowDimensions,
   Modal,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import TriggerHeatmap from "./TriggerHeatmap";
 import FrictionOverlay from "./FrictionOverlay";
 
@@ -513,7 +514,20 @@ const App = () => {
               transparent={false}
             >
               <View style={{ flex: 1, backgroundColor: '#0a0a0a', justifyContent: 'center', alignItems: 'center', padding: 30 }}>
-                <Text style={{ fontSize: 72, color: '#7CFF2D', marginBottom: 20 }}>⏸</Text>
+                <View style={{ 
+                  flexDirection: 'row', 
+                  gap: 18, 
+                  marginBottom: 30 
+                }}>
+                  <View style={{ 
+                    width: 18, height: 70, backgroundColor: '#7CFF2D', borderRadius: 10,
+                    shadowColor: '#7CFF2D', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.8, shadowRadius: 15 
+                  }} />
+                  <View style={{ 
+                    width: 18, height: 70, backgroundColor: '#7cff2d', borderRadius: 10,
+                    shadowColor: '#7CFF2D', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.8, shadowRadius: 15 
+                  }} />
+                </View>
                 <Text style={{ fontSize: 28, color: '#FFFFFF', fontWeight: '900', letterSpacing: 2, marginBottom: 20, textAlign: 'center' }}>TRANSACTION PAUSED</Text>
                 <Text style={{ color: '#A0A0A0', fontSize: 18, textAlign: 'center', lineHeight: 28, paddingHorizontal: 20 }}>{modalReason}</Text>
                 {countdown > 0 ? (
@@ -680,7 +694,7 @@ const styles = StyleSheet.create({
   financialTitle: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#34C759",
+    color: "#7cff2d",
     textTransform: "uppercase",
     letterSpacing: 1,
     marginBottom: 24,
