@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import joblib
@@ -155,3 +156,8 @@ def trigger(payload: BehavioralPayload):
         }
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Inference failed: {exc}")
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)

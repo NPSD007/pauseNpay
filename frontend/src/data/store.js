@@ -74,6 +74,8 @@ export const useStore = create((set, get) => ({
     const currentState = get();
     const currentSignals = currentState.signals;
 
+    const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+
     const body = {
       transaction_id: "tx_" + Date.now(),
       user_id: "demo_user_001",
@@ -91,7 +93,7 @@ export const useStore = create((set, get) => ({
     console.log("🚀 Payload heading to FastAPI:", JSON.stringify(body, null, 2));
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/predict_impulse', {
+      const response = await fetch(`${API_BASE_URL}/predict_impulse`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
