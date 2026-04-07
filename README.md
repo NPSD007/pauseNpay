@@ -46,9 +46,9 @@ npx vercel --prod
 
 ### Option C — GitHub Pages
 ```bash
-cd dopamine-frontend
+cd frontend/src
 npm install
-npx expo start
+npm dev start
 ```
 
 ## Concept
