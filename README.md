@@ -50,6 +50,8 @@ cd frontend/src
 npm install
 npm dev start
 ```
+## Live Demo
+**https://pause-npay.vercel.app/**
 
 ## Concept
 This prototype demonstrates how localized AI interventions can establish healthier financial habits by inserting a mindful "pause" right before a potential impulse "pay."
