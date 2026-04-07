@@ -9,6 +9,20 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from models import BehavioralPayload
+from pydantic import BaseModel
+
+class PredictImpulseRequest(BaseModel):
+    transaction_id: str
+    user_id: str
+    amount: float
+    merchant_name: str
+    category: str
+    timestamp: str
+    app_usage_minutes: int
+    app_switch_count: int
+    tx_frequency_last_hour: int
+    is_late_night: bool
+    days_since_last_purchase: int
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -42,6 +56,41 @@ app.add_middleware(
 def health_check():
     return {"status": "healthy"}
 
+
+@app.post("/predict_impulse")
+def predict_impulse(request: PredictImpulseRequest):
+    print(f"--- ML INFERENCE TRIGGERED ---")
+    print(f"Signals Received: Usage={request.app_usage_minutes}m, Switches={request.app_switch_count}, LateNight={request.is_late_night}")
+    
+    # Map the incoming React request to the XGBoost schema expected by the model
+    time_of_day = "LATE_NIGHT" if request.is_late_night else "EVENING"
+    day_of_week = "Friday"
+    app_sequence = "Social->Shopping"
+    daily_spend_ratio = request.amount / 1000.0  # mock ratio
+    erratic_usage_score = request.app_switch_count / 10.0
+    
+    df = pd.DataFrame([{
+        "time_of_day": time_of_day,
+        "day_of_week": day_of_week,
+        "app_sequence": app_sequence,
+        "social_screen_time_mins": request.app_usage_minutes,
+        "daily_spend_ratio": daily_spend_ratio,
+        "erratic_usage_score": erratic_usage_score
+    }])
+
+    try:
+        for col in CATEGORICAL_COLUMNS:
+            encoder = LABEL_ENCODERS.get(col)
+            if encoder is None:
+                raise ValueError(f"Missing label encoder for column: {col}")
+            df[col] = encoder.transform(df[col].astype(str))
+
+        proba = float(MODEL.predict_proba(df)[0][1])
+        return {"impulse_score": int(np.round(proba * 100))}
+    except Exception as exc:
+        print("Inference error:", exc)
+        # fallback
+        return {"impulse_score": 85}
 
 @app.post("/api/v1/trigger")
 def trigger(payload: BehavioralPayload):

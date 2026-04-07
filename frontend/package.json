@@ -1,0 +1,44 @@
+{
+  "name": "pausenpay",
+  "version": "1.0.0",
+  "description": "PAUSEnPAY — Behavioral AI-based impulse spending prevention system",
+  "main": "index.js",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
+    "format": "prettier --write src/**/*.{js,jsx,ts,tsx,css}"
+  },
+  "dependencies": {
+    "clsx": "^2.1.0",
+    "date-fns": "^3.3.1",
+    "framer-motion": "^11.0.8",
+    "lucide-react": "^0.344.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.0",
+    "recharts": "^2.12.2",
+    "zustand": "^4.5.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.64",
+    "@types/react-dom": "^18.2.21",
+    "@vitejs/plugin-react": "^4.7.0",
+    "autoprefixer": "^10.4.18",
+    "eslint": "^8.57.0",
+    "postcss": "^8.4.35",
+    "prettier": "^3.2.5",
+    "typescript": "^5.3.3",
+    "vite": "^5.4.21"
+  },
+  "keywords": [
+    "fintech",
+    "behavioral-ai",
+    "impulse-spending",
+    "pausenpay"
+  ],
+  "author": "PAUSEnPAY Team",
+  "license": "MIT"
+}
