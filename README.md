@@ -10,7 +10,7 @@
 - **Premium UI/UX:** Built with React Native, featuring a dark-mode core with high-contrast neon green accents.
 
 ## Tech Stack
-- **Frontend:** React Native, Expo, TypeScript
+- **Frontend:** React Native, TypeScript
 - **Backend:** Python, FastAPI, XGBoost
 
 ## Getting Started
