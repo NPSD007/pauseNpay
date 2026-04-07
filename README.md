@@ -24,9 +24,9 @@ python -m uvicorn main:app --reload
 ### 2. Run the Frontend
 Navigate to the frontend directory and start the Expo development server:
 ```bash
-cd dopamine-frontend
+cd frontend/src
 npm install
-npx expo start
+npm dev start
 ```
 
 ## Concept
